@@ -1,111 +1,225 @@
-# Summary: Online Transaction Fraud Detection
+# Online Transaction Fraud Detection
+
+## End-to-End Machine Learning & Deep Learning Pipeline
+
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://www.tensorflow.org/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-Latest-green.svg)](https://xgboost.readthedocs.io/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-Latest-yellow.svg)](https://scikit-learn.org/)
+
+---
+
+## Table of Contents
+- [Project Overview](#-project-overview)
+- [Problem Statement](#-problem-statement)
+- [Dataset Information](#-dataset-information)
+- [Methodology](#-methodology)
+- [Models Implemented](#-models-implemented)
+- [Results & Performance](#-results--performance)
+- [Key Insights](#-key-insights)
+- [Conclusion](#-conclusion)
+- [How to Run](#-how-to-run)
+- [File Structure](#-file-structure)
+
+---
 
 ## Project Overview
 
-End-to-End Machine Learning & Deep Learning Pipeline for Fraud Detection  
+Proyek ini membangun pipeline **Machine Learning** dan **Deep Learning** yang komprehensif untuk mendeteksi transaksi fraud dalam data transaksi online. Pipeline mencakup:
+
+1. Exploratory Data Analysis (EDA)
+2. Data Preprocessing & Cleaning
+3. Handling Class Imbalance
+4. Training Traditional ML Models
+5. Building Deep Learning Model
+6. Model Comparison & Selection
+7. Test Set Prediction
+
+---
+
+## Problem Statement
+
+**Online transaction fraud** merupakan masalah kritis dalam industri keuangan yang dapat menyebabkan:
+- Kerugian finansial bagi pelanggan dan bisnis
+- Hilangnya kepercayaan pelanggan
+- Sanksi regulasi
+
+### Tantangan utama dalam fraud detection:
+
+| Challenge | Description |
+|-----------|-------------|
+| **Class Imbalance** | Transaksi fraud sangat jarang (<5% dari total transaksi) |
+| **Evolving Patterns** | Penipu terus mengubah taktik mereka |
+| **Real-time Detection** | Kebutuhan prediksi yang cepat dan akurat |
+
+### Target Variable:
+- `isFraud = 1`: Transaksi Fraudulent
+- `isFraud = 0`: Transaksi Legitimate
 
 ---
 
 ## Dataset Information
 
-| Keterangan | Training Data | Test Data |
-|------------|---------------|-----------|
-| Jumlah Transaksi | 590,540 | 506,691 |
-| Jumlah Fitur | 393 | 393 |
-| Target Variable | isFraud (0/1) | - |
+### Dataset Size
 
-### Class Distribution (Imbalanced)
-- **Not Fraud (0):** ~96.5% 
-- **Fraud (1):** ~3.5%
-- **Imbalance Ratio:** 1:27
+| Dataset | Transactions | Features |
+|---------|--------------|----------|
+| **Training** | 590,540 | 393 + target |
+| **Test** | 506,691 | 393 |
 
----
+### Class Distribution (Highly Imbalanced)
 
-## Preprocessing Steps
+| Class | Count | Percentage |
+|-------|-------|------------|
+| Not Fraud (0) | ~570,000 | ~96.5% |
+| Fraud (1) | ~20,000 | ~3.5% |
 
-1. **Missing Value Handling:**
-   - Numerical features: Imputed with **median**
-   - Categorical features: Imputed with **'Unknown'**
+**Imbalance Ratio: 1:27** - Setiap 1 transaksi fraud, ada 27 transaksi legitimate.
 
-2. **Encoding:**
-   - Label Encoding untuk 6 categorical columns
-
-3. **Feature Scaling:**
-   - StandardScaler untuk normalisasi semua fitur
-
-4. **Train-Validation Split:**
-   - Training: 80% (472,432 samples)
-   - Validation: 20% (118,108 samples)
-   - Stratified split untuk menjaga distribusi class
-
-5. **Class Imbalance Handling:**
-   - Menggunakan **Class Weights** (bukan SMOTE)
-   - Fraud class diberi bobot ~14x lebih tinggi
-   - Memory-efficient untuk dataset besar
+### Feature Types
+- **Categorical Features**: 6 columns (ProductCD, card4, card6, P_emaildomain, R_emaildomain, M4)
+- **Numerical Features**: 386+ columns (TransactionAmt, V1-V339, C1-C14, D1-D15, etc.)
 
 ---
 
-## Models Trained
+## Methodology
 
-### 1. Logistic Regression (Traditional ML)
-- Linear model untuk baseline
-- Parameter: C=0.1, solver='lbfgs'
-- class_weight='balanced'
+### 1. Data Loading
+- Menggunakan **Polars** untuk data manipulation yang lebih cepat dan memory-efficient
 
-### 2. Random Forest (Ensemble ML)
-- 100 trees, max_depth=15
-- class_weight='balanced'
+### 2. Exploratory Data Analysis (EDA)
+- Analisis distribusi target variable
+- Identifikasi missing values
+- Analisis tipe fitur (categorical vs numerical)
+
+### 3. Data Preprocessing
+
+| Step | Method | Details |
+|------|--------|---------|
+| **Missing Values (Numerical)** | Median Imputation | Robust terhadap outliers |
+| **Missing Values (Categorical)** | Fill with 'Unknown' | Mempertahankan informasi |
+| **Encoding** | Label Encoding | Mengubah kategori ke numerik |
+| **Scaling** | StandardScaler | Mean=0, Std=1 |
+
+### 4. Train-Validation Split
+- **Training Set**: 80% (472,432 samples)
+- **Validation Set**: 20% (118,108 samples)
+- **Stratified Split**: Menjaga distribusi fraud ratio
+
+### 5. Handling Class Imbalance
+
+**Approach: Class Weights** (Memory-Efficient Alternative to SMOTE)
+
+```
+Class Weight (Not Fraud): ~0.52
+Class Weight (Fraud): ~14.30
+```
+
+Fraud class diberi bobot **~27x lebih tinggi** untuk menyeimbangkan learning.
+
+**Mengapa Class Weights bukan SMOTE?**
+- Memory efficient untuk dataset besar
+- Tidak membuat synthetic data
+- Lebih cepat training time
+- Menghindari overfitting pada synthetic samples
+
+---
+
+## Models Implemented
+
+### 1. Logistic Regression (Baseline)
+```python
+LogisticRegression(
+    C=0.1,
+    solver='lbfgs',
+    max_iter=1000,
+    class_weight='balanced'
+)
+```
+- Linear model sebagai baseline
+- Fast training dan interpretable
+
+### 2. Random Forest (Ensemble)
+```python
+RandomForestClassifier(
+    n_estimators=100,
+    max_depth=15,
+    class_weight='balanced'
+)
+```
+- Ensemble dari decision trees
 - Handles non-linear relationships
+- Feature importance available
 
 ### 3. XGBoost (Gradient Boosting)
-- 150 boosting rounds, max_depth=6
-- scale_pos_weight untuk class imbalance
+```python
+XGBClassifier(
+    n_estimators=150,
+    max_depth=6,
+    learning_rate=0.05,
+    scale_pos_weight=27  # Handle imbalance
+)
+```
 - State-of-the-art untuk tabular data
+- Built-in handling untuk class imbalance
+- Excellent performance dan speed
 
 ### 4. Neural Network - MLP (Deep Learning)
+```
+Architecture:
+Input (393) → Dense(256) → BN → Dropout(0.3)
+           → Dense(128) → BN → Dropout(0.3)
+           → Dense(64)  → BN → Dropout(0.2)
+           → Dense(32)  → BN → Dropout(0.2)
+           → Dense(1, sigmoid)
+
+Total Parameters: 145,793
+```
 - Framework: TensorFlow/Keras
-- Architecture: 256 - 128 - 64 - 32 - 1
-- BatchNormalization + Dropout (0.2-0.3)
 - Optimizer: Adam (lr=0.001)
-- Early Stopping + ReduceLROnPlateau
-- Total Parameters: 145,793
+- Callbacks: Early Stopping + ReduceLROnPlateau
+- Class weights applied during training
 
 ---
 
-## Model Performance Comparison
+## Results & Performance
+
+### Model Comparison Table
 
 | Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
-|-------|----------|-----------|--------|----------|---------|
+|-------|:--------:|:---------:|:------:|:--------:|:-------:|
 | Logistic Regression | 82.43% | 13.42% | 73.72% | 22.70% | 86.04% |
 | Random Forest | 92.91% | 28.97% | 70.65% | 41.09% | 91.10% |
 | **XGBoost** | 88.47% | 20.49% | **79.70%** | 32.60% | **92.02%** |
-| Neural Network (TensorFlow) | **93.15%** | **29.48%** | 68.84% | **41.28%** | 91.04% |
+| Neural Network | **93.15%** | **29.48%** | 68.84% | **41.28%** | 91.04% |
 
-### Best Model per Metric:
-- **Accuracy:** Neural Network (93.15%)
-- **Precision:** Neural Network (29.48%)
-- **Recall:** XGBoost (79.70%) [BEST]
-- **F1-Score:** Neural Network (41.28%)
-- **ROC-AUC:** XGBoost (92.02%) [BEST]
+### Best Model per Metric
 
----
+| Metric | Best Model | Score |
+|--------|------------|-------|
+| **Accuracy** | Neural Network | 93.15% |
+| **Precision** | Neural Network | 29.48% |
+| **Recall** | XGBoost | 79.70% |
+| **F1-Score** | Neural Network | 41.28% |
+| **ROC-AUC** | XGBoost | 92.02% |
 
-## Best Model Selection
+### Selected Best Model: **XGBoost**
 
-### Winner: XGBoost
-
-**Alasan:**
+**Alasan pemilihan:**
 1. **ROC-AUC tertinggi (92.02%)** - Kemampuan diskriminasi terbaik
 2. **Recall tertinggi (79.70%)** - Mendeteksi ~80% dari semua fraud
 3. **Memory & Speed efficient** - Tidak memerlukan GPU
 4. **Interpretable** - Feature importance tersedia
 
-### Top 5 Most Important Features:
-1. V258 (10.98%)
-2. V70 (8.29%)
-3. V91 (5.87%)
-4. V201 (5.40%)
-5. V294 (3.66%)
+### Top 5 Most Important Features (XGBoost)
+
+| Rank | Feature | Importance |
+|------|---------|------------|
+| 1 | V258 | 10.98% |
+| 2 | V70 | 8.29% |
+| 3 | V91 | 5.87% |
+| 4 | V201 | 5.40% |
+| 5 | V294 | 3.66% |
 
 ---
 
@@ -113,77 +227,120 @@ End-to-End Machine Learning & Deep Learning Pipeline for Fraud Detection
 
 ### Mengapa Recall Lebih Penting dari Precision?
 
-Dalam **fraud detection**, lebih baik:
-- Menangkap 80 fraud dari 100 (high recall) + investigasi 70 false positive
-- Daripada hanya menangkap 30 fraud tapi precision tinggi
+Dalam **fraud detection**, konsekuensi missing fraud jauh lebih besar daripada false positive:
 
-**Cost of Missing Fraud >> Cost of False Positive**
+```
+Cost of Missing Fraud >> Cost of False Positive
+```
 
-### Trade-off Analysis:
-- **High Recall Model (XGBoost):** Lebih banyak fraud tertangkap, tapi lebih banyak false alarm
-- **High Precision Model (Neural Network):** Lebih akurat saat prediksi fraud, tapi beberapa fraud terlewat
+| Scenario | Consequence |
+|----------|-------------|
+| **False Positive** | Customer minor inconvenience, quick verification |
+| **False Negative (Missed Fraud)** | Financial loss, reputation damage, legal issues |
 
----
+### Trade-off Analysis
 
-## Output
+| Model Type | Pros | Cons |
+|------------|------|------|
+| **High Recall (XGBoost)** | 80% fraud tertangkap | Lebih banyak false alarm |
+| **High Precision (Neural Network)** | Akurat saat prediksi fraud | Beberapa fraud terlewat |
 
-File prediksi disimpan di: `fraud_predictions.csv`
+### Recommendation per Use Case
 
-| Column | Description |
-|--------|-------------|
-| TransactionID | ID unik transaksi |
-| isFraud | Probabilitas fraud (0-1) |
-
-Total Predictions: **506,691 transactions**
-
----
-
-## Recommendations
-
-### Untuk Production:
-1. Gunakan **XGBoost** sebagai primary model
-2. Set threshold berdasarkan business requirement:
-   - Threshold 0.3: Higher recall, more investigation
-   - Threshold 0.5: Balanced approach
-   - Threshold 0.7: Higher precision, miss some fraud
-
-### Untuk Improvement:
-1. Feature engineering dari domain knowledge
-2. Ensemble: Combine XGBoost + Neural Network
-3. Tune threshold berdasarkan cost-benefit analysis
-4. Regular retraining dengan data baru
-
----
-
-## Technical Notes
-
-### Memory Optimization:
-- **Polars** instead of Pandas untuk data manipulation
-- **Class Weights** instead of SMOTE (no memory explosion)
-- **n_jobs=1** untuk model training (single thread)
-- **No GridSearchCV** (direct training dengan good defaults)
-
-### Libraries Used:
-- polars, pandas, numpy
-- scikit-learn
-- xgboost
-- tensorflow/keras
-- matplotlib, seaborn
+| Use Case | Recommended Model | Threshold |
+|----------|-------------------|-----------|
+| **High Security (Banking)** | XGBoost | 0.3 (more detection) |
+| **Balanced Approach** | XGBoost/Neural Network | 0.5 |
+| **Low False Positive** | Neural Network | 0.7 (higher precision) |
 
 ---
 
 ## Conclusion
 
-Pipeline fraud detection ini berhasil dibangun dengan:
-- 4 model yang dibandingkan secara komprehensif
-- ROC-AUC > 90% untuk 3 model terbaik
-- Recall ~80% untuk XGBoost (menangkap mayoritas fraud)
-- Memory-efficient approach untuk large dataset
-- Prediksi test set tersimpan dalam CSV
+### Summary
 
-**Model terpilih: XGBoost** dengan ROC-AUC 92.02% dan Recall 79.70%
+Pipeline fraud detection ini berhasil dibangun dengan hasil sebagai berikut:
+
+- **4 model** dibandingkan secara komprehensif (Logistic Regression, Random Forest, XGBoost, Neural Network)
+
+- **ROC-AUC > 90%** untuk 3 model terbaik, menunjukkan kemampuan diskriminasi yang excellent
+
+- **Recall ~80%** untuk XGBoost, berhasil mendeteksi mayoritas transaksi fraud
+
+- **Memory-efficient approach** berhasil menangani dataset besar tanpa memory issues
+
+- **Prediksi test set** tersimpan dalam `fraud_predictions.csv` (506,691 predictions)
+
+### Final Selected Model
+
+| Attribute | Value |
+|-----------|-------|
+| **Model** | XGBoost |
+| **ROC-AUC** | 92.02% |
+| **Recall** | 79.70% |
+| **F1-Score** | 32.60% |
+| **Predictions** | 506,691 transactions |
+
+### Future Improvements
+
+1. **Feature Engineering**: Menambah fitur dari domain knowledge
+2. **Ensemble Methods**: Kombinasi XGBoost + Neural Network
+3. **Threshold Tuning**: Berdasarkan cost-benefit analysis
+4. **Regular Retraining**: Dengan data baru untuk adaptasi pattern fraud
 
 ---
 
-*Summary generated from: finalterm_transaction_data.ipynb*
+## How to Run
 
+### Prerequisites
+```bash
+pip install polars pandas numpy matplotlib seaborn scikit-learn xgboost tensorflow
+```
+
+### Run the Notebook
+1. Buka `finalterm_transaction_code.ipynb` di Jupyter Notebook/VS Code
+2. Pastikan dataset tersedia di folder `finalterm_folder/`:
+   - `train_transaction.csv`
+   - `test_transaction.csv`
+3. Jalankan semua cell secara berurutan
+
+### Output
+- `fraud_predictions.csv`: File prediksi dengan kolom `TransactionID` dan `isFraud` (probability)
+
+---
+
+## File Structure
+
+```
+UAS Dataset 1/
+├── finalterm_transaction_code.ipynb  # Main notebook
+├── fraud_predictions.csv             # Output predictions
+├── README.md                         # This file
+└── finalterm_folder/
+    ├── train_transaction.csv         # Training data
+    └── test_transaction.csv          # Test data
+```
+
+---
+
+## Technical Notes
+
+### Memory Optimization Strategies Used
+
+| Strategy | Benefit |
+|----------|---------|
+| **Polars** instead of Pandas | Faster data manipulation, less memory |
+| **Class Weights** instead of SMOTE | No memory explosion from synthetic data |
+| **n_jobs=1** | Single thread, predictable memory usage |
+| **No GridSearchCV** | Direct training dengan good defaults |
+
+### Libraries Used
+
+| Category | Libraries |
+|----------|-----------|
+| **Data Manipulation** | Polars, Pandas, NumPy |
+| **Visualization** | Matplotlib, Seaborn |
+| **Machine Learning** | scikit-learn, XGBoost |
+| **Deep Learning** | TensorFlow/Keras |
+
+---
