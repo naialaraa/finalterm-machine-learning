@@ -208,7 +208,7 @@ Training Strategy:
 |--------|-------|
 | **Final Accuracy** | ~90-95% |
 | **F1-Score** | ~0.90-0.95 |
-| **Training Time** | ~30-60 minutes |
+| **Training Time** | ~1 hour |
 | **Model Size** | ~10-15 MB |
 
 ### Why Transfer Learning Wins?
@@ -399,4 +399,5 @@ UAS Dataset 3/
 | **F1-Score** | $2 \times \frac{Precision \times Recall}{Precision + Recall}$ | Harmonic mean of P and R |
 
 ---
+
 
