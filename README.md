@@ -72,7 +72,7 @@ Mendeteksi transaksi fraudulent dalam dataset online transaction yang **highly i
 - Threshold optimization
 - Class weight balancing
 
-**[View Full Documentation →](UAS%20Dataset%201/README.md)**
+**[View Full Documentation →](Dataset%201%20-%20Transactions)**
 
 ---
 
@@ -111,7 +111,7 @@ Memprediksi tahun rilis lagu berdasarkan 90 fitur audio numerik dari dataset den
 - Hyperparameter tuning
 - Ensemble model comparison
 
-**[View Full Documentation →](UAS%20Dataset%202/README.md)**
+**[View Full Documentation →](Dataset%202%20-%20Regression)**
 
 ---
 
@@ -154,7 +154,7 @@ Mengklasifikasikan gambar ikan ke dalam **31 spesies** menggunakan Convolutional
 - **Validation**: 1,500+ images
 - **Test**: 1,500+ images
 
-**[View Full Documentation →](UAS%20Dataset%203/README.md)**
+**[View Full Documentation →](Dataset%203%20-%20Image%20Classification)**
 
 ---
 
@@ -291,46 +291,6 @@ jupyter notebook "UAS Dataset 3/finalterm-image-code.ipynb"
 
 ---
 
-## Repository Structure
-
-```
-Machine Learning/
-│
-├── UAS Dataset 1/                    # Transaction Fraud Detection
-│   ├── finalterm_transaction_code.ipynb
-│   ├── fraud_predictions.csv
-│   ├── README.md
-│   ├── Summary.md
-│   └── finalterm_folder/
-│       ├── train_transaction.csv
-│       └── test_transaction.csv
-│
-├── UAS Dataset 2/                    # Song Release Year Prediction
-│   ├── finalterm_regression_code.ipynb
-│   ├── finalterm-regresi-dataset.csv
-│   └── README.md
-│
-├── UAS Dataset 3/                    # Fish Image Classification
-│   ├── finalterm-image-code.ipynb
-│   ├── best_cnn_model.keras
-│   ├── best_transfer_model.keras
-│   ├── README.md
-│   └── FishImgDataset/
-│       ├── train/                    # 31 fish species folders
-│       ├── val/                      # Validation set
-│       └── test/                     # Test set
-│
-├── UTS Dataset 1/                    # Midterm: Fraud Detection
-├── UTS Dataset 2/                    # Midterm: Regression
-├── UTS Dataset 3/                    # Midterm: Clustering
-│
-├── README.md                         # This file
-├── summary.md                        # Overall summary
-└── requirements.txt                  # Python dependencies
-```
-
----
-
 ## Results Summary
 
 ### Comparative Performance
@@ -402,100 +362,13 @@ Machine Learning/
 - **Document everything** - Code, decisions, and results  
 - **Visualize results** - Makes interpretation easier  
 
-### Challenges Overcome
-
-- **Class Imbalance**: Implemented SMOTE and class weights  
-- **High Dimensionality**: Feature selection and regularization  
-- **Limited Data**: Transfer learning and data augmentation  
-- **Long Training Time**: Optimized model architecture  
-- **Model Interpretation**: Feature importance and visualization  
-
----
-
-## References & Resources
-
-### Machine Learning
-- [scikit-learn Documentation](https://scikit-learn.org/)
-- [XGBoost Documentation](https://xgboost.readthedocs.io/)
-
-### Deep Learning
-- [TensorFlow Documentation](https://www.tensorflow.org/)
-- [Keras Documentation](https://keras.io/)
-
-### Computer Vision
-- [Transfer Learning Guide](https://www.tensorflow.org/tutorials/images/transfer_learning)
-- [MobileNetV2 Paper](https://arxiv.org/abs/1801.04381)
-
-### Imbalanced Data
-- [SMOTE Paper](https://arxiv.org/abs/1106.1813)
-- [Imbalanced-learn Documentation](https://imbalanced-learn.org/)
-
 ---
 
 ## Author
 
-**Your Name**  
-Mahasiswa Semester 7  
-Jurusan: [Your Major]  
-Universitas: [Your University]
-
-### Contact
-- Email: your.email@example.com
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- GitHub: [Your GitHub](https://github.com/yourusername)
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Acknowledgments
-
-- **Dosen Pengampu**: [Nama Dosen] - Guidance and feedback
-- **Dataset Sources**: Kaggle, UCI ML Repository
-- **Community**: Stack Overflow, TensorFlow Forums
-- **Libraries**: All open-source contributors
-
----
-
-## Future Improvements
-
-### Potential Enhancements
-
-**Dataset 1 (Fraud Detection)**
-- [ ] Implement ensemble voting classifier
-- [ ] Try deep learning with attention mechanism
-- [ ] Add real-time prediction API
-
-**Dataset 2 (Song Prediction)**
-- [ ] Feature engineering from audio properties
-- [ ] Try RNN/LSTM for temporal patterns
-- [ ] Ensemble multiple models
-
-**Dataset 3 (Fish Classification)**
-- [ ] Try other architectures (EfficientNet, ResNet)
-- [ ] Implement GradCAM for visualization
-- [ ] Deploy as web application
-- [ ] Add confidence threshold for predictions
-
----
-
-## Support
-
-Jika ada pertanyaan atau issues, silakan:
-1. Open an issue di GitHub repository
-2. Contact via email
-3. Lihat dokumentasi di masing-masing folder project
-
----
-
-<div align="center">
-
-**If you find this project useful, please consider giving it a star!**
-
-Made with passion for Machine Learning Final Term Project
+**Naia Lara Shafir Anwar**  
+TK-46-GAB
+Machine Learning
 
 </div>
+
