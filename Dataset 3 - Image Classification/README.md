@@ -198,7 +198,7 @@ Training Strategy:
 | **Recall** | ~0.75-0.85 | ~0.90-0.95 |
 | **F1-Score** | ~0.75-0.85 | ~0.90-0.95 |
 | **Parameters** | ~3-5M | ~2.5M (mostly frozen) |
-| **Training Time** | 20+ hours | ~1 hour |
+| **Training Time** | 40+ hours | ~15 hour |
 
 *Note: Actual values may vary based on training run*
 
@@ -336,10 +336,10 @@ pip install tensorflow numpy pandas matplotlib seaborn pillow scikit-learn
 | Section | Estimated Time |
 |---------|---------------|
 | Data Loading & EDA | 2-5 minutes |
-| CNN from Scratch Training | 20+ hours (GPU recommended) |
+| CNN from Scratch Training | 40+ hours (GPU recommended) |
 | Transfer Learning Training | 30-60 minutes |
 | Evaluation & Visualization | 5-10 minutes |
-| **Total (Transfer Learning only)** | **~1-2 hours** |
+| **Total (Transfer Learning only)** | **~15 hours** |
 
 ### Hardware Recommendations
 
@@ -399,3 +399,4 @@ UAS Dataset 3/
 | **F1-Score** | $2 \times \frac{Precision \times Recall}{Precision + Recall}$ | Harmonic mean of P and R |
 
 ---
+
