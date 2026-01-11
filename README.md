@@ -365,10 +365,14 @@ jupyter notebook "UAS Dataset 3/finalterm-image-code.ipynb"
 
 ## Author
 
-**Naia Lara Shafir Anwar**  
-TK-46-GAB
-Machine Learning
+| Field | Value |
+|-------|-------|
+| Nama | Naia Lara Shafir Anwar |
+| Kelas | TK-46-GAB |
+| NIM | 1103223030 |
+| Mata Kuliah | Machine Learning |
 
 </div>
+
 
 
